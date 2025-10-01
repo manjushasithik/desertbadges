@@ -1,7 +1,7 @@
-// src/App.js
 import { useState } from "react";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { db } from "./firebase";
+import { Button, TextField, MenuItem, Typography, Box } from "@mui/material";
 
 function App() {
   const [service, setService] = useState("");
@@ -11,54 +11,79 @@ function App() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      await addDoc(collection(db, "reviews"), {
-        businessID: "SALON123",   // hardcoded for now
-        serviceID: service,
-        email,
-        badgeGood,
-        badgeBad,
-        timestamp: serverTimestamp()
-      });
-      alert("✅ Thank you! Your review has been submitted.");
-      setService(""); setEmail(""); setBadgeGood(""); setBadgeBad("");
-    } catch (err) {
-      console.error("❌ Error saving review:", err);
-      alert("Error — check console.");
-    }
+    await addDoc(collection(db, "reviews"), {
+      businessID: "SALON123",
+      serviceID: service,
+      email,
+      badgeGood,
+      badgeBad,
+      timestamp: serverTimestamp(),
+    });
+    alert("Review submitted! Thank you.");
+    
+
   };
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h2>Leave a Review</h2>
+    <Box sx={{ p: 4, maxWidth: 400, mx: "auto" }}>
+      <Typography variant="h5" gutterBottom>
+        Rate This Business
+      </Typography>
+
       <form onSubmit={handleSubmit}>
-        <label>Service</label>
-        <select value={service} onChange={(e) => setService(e.target.value)}>
-          <option value="">Select Service</option>
-          <option value="HAIRCUT">Haircut</option>
-          <option value="OIL_CHANGE">Oil Change</option>
-        </select><br/><br/>
+        <TextField
+          label="Service"
+          select
+          fullWidth
+          margin="normal"
+          value={service}
+          onChange={(e) => setService(e.target.value)}
+        >
+          <MenuItem value="HAIRCUT">Haircut</MenuItem>
+          <MenuItem value="OIL_CHANGE">Oil Change</MenuItem>
+        </TextField>
 
-        <label>Email</label>
-        <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required /><br/><br/>
+        <TextField
+          label="Email"
+          type="email"
+          fullWidth
+          margin="normal"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+        />
 
-        <label>Good Badge</label>
-        <select value={badgeGood} onChange={(e) => setBadgeGood(e.target.value)} required>
-          <option value="">Select</option>
-          <option value="Professional">Professional</option>
-          <option value="Helpful">Helpful</option>
-        </select><br/><br/>
+        <TextField
+          label="Good Badge"
+          select
+          fullWidth
+          margin="normal"
+          value={badgeGood}
+          onChange={(e) => setBadgeGood(e.target.value)}
+          required
+        >
+          <MenuItem value="Professional">Professional</MenuItem>
+          <MenuItem value="Helpful">Helpful</MenuItem>
+        </TextField>
 
-        <label>Bad Badge (Optional)</label>
-        <select value={badgeBad} onChange={(e) => setBadgeBad(e.target.value)}>
-          <option value="">None</option>
-          <option value="Rushed">Rushed</option>
-          <option value="Unclear">Unclear</option>
-        </select><br/><br/>
+        <TextField
+          label="Bad Badge (optional)"
+          select
+          fullWidth
+          margin="normal"
+          value={badgeBad}
+          onChange={(e) => setBadgeBad(e.target.value)}
+        >
+          <MenuItem value="">None</MenuItem>
+          <MenuItem value="Rushed">Rushed</MenuItem>
+          <MenuItem value="Unclear">Unclear</MenuItem>
+        </TextField>
 
-        <button type="submit">Submit Review</button>
+        <Button variant="contained" color="primary" type="submit" fullWidth sx={{ mt: 2 }}>
+          Submit Review
+        </Button>
       </form>
-    </div>
+    </Box>
   );
 }
 
